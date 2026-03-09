@@ -19,11 +19,27 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  findOne(id: string): Promise<User> {
-    return this.userRepository.findOneBy({ id }) as Promise<User>;
+  findOne(id: string): Promise<User | null> {
+    return this.userRepository.findOneBy({ id });
   }
 
-  async update(id: string, data: Partial<User>): Promise<User> {
+  findByEmail(email: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { email } });
+  }
+
+  findByUsername(username: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { username } });
+  }
+
+  findByEmailWithPassword(email: string): Promise<User | null> {
+    return this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .where('user.email = :email', { email })
+      .getOne();
+  }
+
+  async update(id: string, data: Partial<User>): Promise<User | null> {
     await this.userRepository.update(id, data);
     return this.findOne(id);
   }
