@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   UnauthorizedException,
@@ -29,6 +30,11 @@ export class AuthService {
       throw new ConflictException('Username already in use');
     }
 
+    if (!registerDto.password) {
+      throw new BadRequestException('Missing password field');
+    }
+    console.log('Registering user with data:', registerDto);
+
     const hashedPassword = await bcrypt.hash(registerDto.password, 12);
 
     const createdUser = await this.usersService.create({
@@ -37,16 +43,25 @@ export class AuthService {
       password: hashedPassword,
     });
 
-    return this.buildAuthResponse(createdUser.id, createdUser.email, createdUser.username);
+    return this.buildAuthResponse(
+      createdUser.id,
+      createdUser.email,
+      createdUser.username,
+    );
   }
 
   async signIn(signInDto: SignInDto) {
-    const user = await this.usersService.findByEmailWithPassword(signInDto.email);
+    const user = await this.usersService.findByEmailWithPassword(
+      signInDto.email,
+    );
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const isPasswordValid = await bcrypt.compare(signInDto.password, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      signInDto.password,
+      user.password,
+    );
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }

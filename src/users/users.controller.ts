@@ -8,6 +8,7 @@ export class UsersController {
 
   @Post()
   create(@Body() body: any) {
+    console.log('Received request to create user with body:', body);
     return this.usersService.create(body);
   }
 

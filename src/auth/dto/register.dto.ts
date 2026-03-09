@@ -1,5 +1,12 @@
-import { IsEmail, IsString, Matches, MaxLength, MinLength } from 'class-validator';
-
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 export class RegisterDto {
   @IsEmail()
   email: string;
@@ -17,4 +24,8 @@ export class RegisterDto {
       'password must include uppercase, lowercase, number, and special character',
   })
   password: string;
+
+  @IsNumber()
+  @IsNotEmpty({ message: 'role_id must not be empty' })
+  role_id: number;
 }

@@ -11,6 +11,7 @@ export class UsersService {
   ) {}
 
   create(data: Partial<User>): Promise<User> {
+    console.log('Creating user with data:', data);
     const user = this.userRepository.create(data);
     return this.userRepository.save(user);
   }
