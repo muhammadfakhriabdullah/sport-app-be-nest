@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   UnauthorizedException,
@@ -30,17 +29,10 @@ export class AuthService {
       throw new ConflictException('Username already in use');
     }
 
-    if (!registerDto.password) {
-      throw new BadRequestException('Missing password field');
-    }
-    console.log('Registering user with data:', registerDto);
-
-    const hashedPassword = await bcrypt.hash(registerDto.password, 12);
-
     const createdUser = await this.usersService.create({
       email: registerDto.email,
       username: registerDto.username,
-      password: hashedPassword,
+      password: registerDto.password,
     });
 
     return this.buildAuthResponse(
