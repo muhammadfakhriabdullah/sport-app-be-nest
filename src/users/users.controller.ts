@@ -1,18 +1,51 @@
 // users/users.controller.ts
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() body: any) {
-    return this.usersService.create(body);
+  async create(@Body() createUserDto: CreateUserDto) {
+    const requiredFields: Array<keyof CreateUserDto> = [
+      'email',
+      'password',
+      'username',
+      'role_id',
+    ];
+
+    const missingFields = requiredFields.filter((field) => {
+      const value = createUserDto[field];
+      return value === undefined || value === null || value === '';
+    });
+
+    if (missingFields.length > 0) {
+      throw new BadRequestException({
+        success: false,
+        message: 'One or more required fields are missing',
+        missingFields,
+      });
+    }
+
+    const user = await this.usersService.create(createUserDto);
+
+    return {
+      success: true,
+      message: 'User created successfully',
+      data: user,
+    };
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll() {
+    const users = await this.usersService.findAll();
+
+    return {
+      success: true,
+      message: 'Users fetched successfully',
+      data: users,
+    };
   }
 }

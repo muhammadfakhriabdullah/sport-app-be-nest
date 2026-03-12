@@ -35,16 +35,25 @@ export class AuthService {
       password: registerDto.password,
     });
 
-    return this.buildAuthResponse(createdUser.id, createdUser.email, createdUser.username);
+    return this.buildAuthResponse(
+      createdUser.id,
+      createdUser.email,
+      createdUser.username,
+    );
   }
 
   async signIn(signInDto: SignInDto) {
-    const user = await this.usersService.findByEmailWithPassword(signInDto.email);
+    const user = await this.usersService.findByEmailWithPassword(
+      signInDto.email,
+    );
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const isPasswordValid = await bcrypt.compare(signInDto.password, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      signInDto.password,
+      user.password,
+    );
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }

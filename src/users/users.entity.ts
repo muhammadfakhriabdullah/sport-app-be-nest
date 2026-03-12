@@ -6,21 +6,21 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('app_users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: false })
   email: string;
 
   @Column({ nullable: false, select: false })
   password: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: false })
   username: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   role_id: number;
 
   @UpdateDateColumn({ type: 'timestamp' })
