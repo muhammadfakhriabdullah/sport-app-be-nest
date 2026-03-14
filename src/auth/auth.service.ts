@@ -33,12 +33,14 @@ export class AuthService {
       email: registerDto.email,
       username: registerDto.username,
       password: registerDto.password,
+      role_id: registerDto.role_id,
     });
 
     return this.buildAuthResponse(
       createdUser.id,
       createdUser.email,
       createdUser.username,
+      createdUser.role_id,
     );
   }
 
@@ -58,14 +60,24 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    return this.buildAuthResponse(user.id, user.email, user.username);
+    return this.buildAuthResponse(
+      user.id,
+      user.email,
+      user.username,
+      user.role_id,
+    );
   }
 
-  private buildAuthResponse(id: string, email: string, username: string) {
-    const payload = { sub: id, email, username };
+  private buildAuthResponse(
+    id: string,
+    email: string,
+    username: string,
+    role_id: number,
+  ) {
+    const payload = { sub: id, email, username, role_id };
     return {
       access_token: this.jwtService.sign(payload),
-      user: { id, email, username },
+      user: { id, email, username, role_id },
     };
   }
 }
