@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { ProfilesService } from './profiles.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { GenderEnum } from './profiles.entity';
@@ -6,6 +6,7 @@ import { GenderEnum } from './profiles.entity';
 @Controller('profiles')
 export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
+
   @Post()
   async create(@Body() createProfileDto: CreateProfileDto) {
     // Map gender string to GenderEnum
@@ -33,6 +34,16 @@ export class ProfilesController {
       success: true,
       message: 'Profiles fetched successfully',
       data: profiles,
+    };
+  }
+
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    await this.profilesService.remove(id);
+
+    return {
+      success: true,
+      message: 'Profile deleted successfully',
     };
   }
 }

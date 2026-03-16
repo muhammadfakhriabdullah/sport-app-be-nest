@@ -50,6 +50,6 @@ export class Profile {
   @UpdateDateColumn({ type: 'timestamptz', default: () => 'now()' })
   updated_at: Date;
 
-  @DeleteDateColumn({ type: 'timestamptz' })
-  deleted_at: Date;
+  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamptz', nullable: true })
+  deleted_at: Date | null;
 }
