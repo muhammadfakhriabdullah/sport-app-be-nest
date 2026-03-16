@@ -15,6 +15,7 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 @Controller('profiles')
 export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
+
   @Post()
   async create(@Body() createProfileDto: CreateProfileDto) {
     const profile = await this.profilesService.create(createProfileDto);
@@ -53,6 +54,16 @@ export class ProfilesController {
       success: true,
       message: 'Profile updated successfully',
       data: profile,
+    }
+  }
+  
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    await this.profilesService.remove(id);
+
+    return {
+      success: true,
+      message: 'Profile deleted successfully',
     };
   }
 }

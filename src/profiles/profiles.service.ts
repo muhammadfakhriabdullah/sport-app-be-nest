@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Profile } from './profiles.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -28,6 +28,10 @@ export class ProfilesService {
   }
 
   async remove(id: number): Promise<void> {
-    await this.profileRepository.delete(id);
+    const result = await this.profileRepository.softDelete(id);
+
+    if (!result.affected) {
+      throw new NotFoundException('Profile not found');
+    }
   }
 }
