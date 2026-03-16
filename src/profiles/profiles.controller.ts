@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -9,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { ProfilesService } from './profiles.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
-import { GenderEnum } from './profiles.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Controller('profiles')
@@ -17,17 +17,7 @@ export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
   @Post()
   async create(@Body() createProfileDto: CreateProfileDto) {
-    // Map gender string to GenderEnum
-    const mappedProfile = {
-      ...createProfileDto,
-      gender:
-        createProfileDto.gender === GenderEnum.MALE
-          ? GenderEnum.MALE
-          : createProfileDto.gender === GenderEnum.FEMALE
-            ? GenderEnum.FEMALE
-            : undefined,
-    };
-    const profile = await this.profilesService.create(mappedProfile);
+    const profile = await this.profilesService.create(createProfileDto);
     return {
       success: true,
       message: 'Profile created successfully',
@@ -50,19 +40,14 @@ export class ProfilesController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
-    const mappedProfile = {
-      ...updateProfileDto,
-      gender:
-        updateProfileDto.gender === undefined
-          ? undefined
-          : updateProfileDto.gender === GenderEnum.MALE
-            ? GenderEnum.MALE
-            : updateProfileDto.gender === GenderEnum.FEMALE
-              ? GenderEnum.FEMALE
-              : undefined,
-    };
+    const profile = await this.profilesService.update(id, updateProfileDto);
 
-    const profile = await this.profilesService.update(id, mappedProfile);
+    if (!profile) {
+      throw new NotFoundException({
+        success: false,
+        message: 'Profile not found',
+      });
+    }
 
     return {
       success: true,

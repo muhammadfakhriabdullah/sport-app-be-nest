@@ -1,4 +1,10 @@
-import { IsDate, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { GenderEnum } from '../profiles.entity';
 import { Type } from 'class-transformer';
 
@@ -20,7 +26,7 @@ export class CreateProfileDto {
   @IsString()
   birth_place: string;
 
-  @IsString()
+  @IsEnum(GenderEnum)
   @IsOptional()
   gender: GenderEnum;
 

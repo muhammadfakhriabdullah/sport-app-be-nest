@@ -1,5 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { GenderEnum } from '../profiles.entity';
 
 export class UpdateProfileDto {
@@ -24,7 +30,7 @@ export class UpdateProfileDto {
   @IsOptional()
   birth_place?: string;
 
-  @IsString()
+  @IsEnum(GenderEnum)
   @IsOptional()
   gender?: GenderEnum;
 
