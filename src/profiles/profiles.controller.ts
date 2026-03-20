@@ -40,6 +40,25 @@ export class ProfilesController {
     };
   }
 
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const profile = await this.profilesService.findOne(id);
+
+    if (!profile) {
+      throw new NotFoundException({
+        success: false,
+        message: 'Profile not found',
+      });
+    }
+
+    return {
+      success: true,
+      message: 'Profile fetched successfully',
+      data: profile,
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
