@@ -15,11 +15,11 @@ import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
-@UseGuards(JwtAuthGuard)
 @Controller('profiles')
 export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createProfileDto: CreateProfileDto) {
     const profile = await this.profilesService.create(createProfileDto);
@@ -80,6 +80,7 @@ export class ProfilesController {
     };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.profilesService.remove(id);
