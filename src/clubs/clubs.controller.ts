@@ -8,15 +8,18 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ClubsService } from './clubs.service';
 import { CreateClubDto } from './dto/create-club.dto';
 import { UpdateClubDto } from './dto/update-club.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('clubs')
 export class ClubsController {
   constructor(private readonly clubsService: ClubsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createClubDto: CreateClubDto) {
     const club = await this.clubsService.create(createClubDto);
@@ -57,6 +60,7 @@ export class ClubsController {
     };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':organizationId')
   async update(
     @Param('organizationId', ParseIntPipe) organizationId: number,
@@ -78,6 +82,7 @@ export class ClubsController {
     };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':organizationId')
   async remove(@Param('organizationId', ParseIntPipe) organizationId: number) {
     await this.clubsService.remove(organizationId);
